@@ -1,0 +1,44 @@
+[project]
+name = "python-web-server"
+version = "0.1.0"
+description = "A web server made using Python."
+authors = [
+    {name = "Sam", email = "asamadans@gmail.com"},
+]
+dependencies = [
+    "tornado>=6.4",
+    "black>=23.12.1",
+    "mypy>=1.8.0",
+    "pytest>=7.4.4",
+    "pre-commit>=3.6.0",
+]
+requires-python = ">=3.11"
+readme = "README.md"
+license = {text = "MIT"}
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+[tool.pdm.scripts]
+start = "python src/python_web_server/main.py"
+test = "pytest"
+mypy = "mypy src/python_web_server/"
+lint = "pre-commit run --all-files"
+format = "black src/python_web_server/"
+
+[tool.pdm]
+package-type = "library"
+
+hooks = [
+    "per-commit>=3.6.0",
+]
+
+typing = [
+    "mypy>=0.910",
+    "types-tornado>=6.1.3",
+]
+
+style = [
+    "black>=23.12.1",
+]
