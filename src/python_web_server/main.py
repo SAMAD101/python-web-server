@@ -1,5 +1,6 @@
 import asyncio
 import json
+import os
 
 from tornado.web import Application, RequestHandler
 
@@ -31,7 +32,7 @@ class ResourceParamHandler(RequestHandler):
 
 class AnotherListHandler(RequestHandler):
     def get(self) -> None:
-        with open("lists.txt", "r") as f:
+        with open("list.txt", "r") as f:
             chars = f.read().splitlines()
         self.write(json.dumps(chars))
 
