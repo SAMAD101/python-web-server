@@ -1,6 +1,9 @@
-import tornado.web
-import tornado.ioloop
+import asyncio
+import json
+
 from tornado.web import Application, RequestHandler
+
+from typing import List
 
 
 class MainHandler(RequestHandler):
@@ -8,12 +11,44 @@ class MainHandler(RequestHandler):
         self.write("Hello, world")
 
 
-if __name__ == "__main__":
-    app: Application = Application(
-        [
-            (r"/", MainHandler),
-        ]
-    )
+class ListHandler(RequestHandler):
+    def get(self) -> None:
+        self.render("index.html")
+
+
+class QueryParamHandler(RequestHandler):
+    def get(self) -> None:
+        num = self.get_argument("num")
+        if num.isdigit():
+            r = "odd" if int(num) % 2 else "even"
+            self.write(f"{num} is {r}")
+
+
+class ResourceParamHandler(RequestHandler):
+    def get(self, studentName, studentID) -> None:
+        self.write(f"Hello {studentName} with id {studentID}")
+
+
+class AnotherListHandler(RequestHandler):
+    def get(self) -> None:
+        with open("lists.txt", "r") as f:
+            chars = f.read().splitlines()
+        self.write(json.dumps(chars))
+
+
+async def main() -> None:
+    handlers: List[str] = [
+        (r"/", MainHandler),
+        (r"/cat", ListHandler),
+        (r"/isEven", QueryParamHandler),
+        (r"/students/([A-Za-z]+)/([0-9]+)", ResourceParamHandler),
+        (r"/list", AnotherListHandler),
+    ]
+    app: Application = Application(handlers, template_path="templates")
     app.listen(8888)
     print("Server listening on port 8888")
-    tornado.ioloop.IOLoop.current().start()
+    await asyncio.Event().wait()
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
