@@ -3,7 +3,7 @@ import json
 
 from tornado.web import Application, RequestHandler
 
-from typing import List
+from typing import List, Tuple
 
 
 class MainHandler(RequestHandler):
@@ -43,7 +43,7 @@ class AnotherListHandler(RequestHandler):
 
 
 async def main() -> None:
-    handlers: List[str] = [
+    handlers: List[Tuple[str, RequestHandler]] = [
         (r"/", MainHandler),
         (r"/cat", ListHandler),
         (r"/isEven", QueryParamHandler),
