@@ -35,6 +35,12 @@ class AnotherListHandler(RequestHandler):
             chars = f.read().splitlines()
         self.write(json.dumps(chars))
 
+    def post(self) -> None:
+        char = self.get_argument("char")
+        with open("list.txt", "a") as f:
+            f.write(f"{char}\n")
+        self.write(json.dumps({"success": True}))
+
 
 async def main() -> None:
     handlers: List[str] = [
