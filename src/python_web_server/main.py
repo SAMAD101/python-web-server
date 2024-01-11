@@ -1,6 +1,5 @@
 import asyncio
 import json
-import os
 
 from tornado.web import Application, RequestHandler
 
