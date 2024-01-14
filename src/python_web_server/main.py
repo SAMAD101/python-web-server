@@ -42,6 +42,17 @@ class AnotherListHandler(RequestHandler):
         self.write(json.dumps({"success": True}))
 
 
+class CharacterAdderHandler(RequestHandler):
+    def get(self) -> None:
+        self.render("list.html")
+
+    def post(self) -> None:
+        char = self.get_argument("name")
+        with open("list.txt", "a") as f:
+            f.write(f"{char}\n")
+        self.write(json.dumps({"success": True}))
+
+
 async def main() -> None:
     handlers: List[Tuple[str, RequestHandler]] = [
         (r"/", MainHandler),
@@ -49,6 +60,7 @@ async def main() -> None:
         (r"/isEven", QueryParamHandler),
         (r"/students/([A-Za-z]+)/([0-9]+)", ResourceParamHandler),
         (r"/list", AnotherListHandler),
+        (r"/addChar", CharacterAdderHandler),
     ]
     app: Application = Application(handlers, template_path="templates")
     app.listen(8888)
