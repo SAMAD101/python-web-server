@@ -27,15 +27,20 @@
             const addChar = document.getElementById("add")
             const nameChar = document.getElementById("name")
 
-            fetch("localhost:8888/list")
+            fetch("http://localhost:8888/list")
             .then(response => response.json())
-            .then(jsonResponse => jsonRespose.forEach(element => {
-                let option = document.createElement("option")
-                optiuon.textContent = element.name
-                listChar.appendChild(option)
+            .then(jsonResponse => jsonResponse.forEach(element => {
+                let o = document.createElement("option")
+                o.textContent = element
+                listChar.appendChild(o)
             }))
 
-
+            addChar.addEventListener("click", e => {
+                let char = nameChar.value
+                fetch(`http://localhost:8888/addChar?char=${char}`, {"method": "POST"})
+                .then(response => response.json())
+                .then(jsonResponse => alert(jsonResponse.message))
+            })
         </script>
 
 

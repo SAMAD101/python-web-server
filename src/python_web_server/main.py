@@ -47,10 +47,12 @@ class CharacterAdderHandler(RequestHandler):
         self.render("list.html")
 
     def post(self) -> None:
-        char = self.get_argument("name")
+        char = self.get_argument("char")
         with open("list.txt", "a") as f:
             f.write(f"{char}\n")
-        self.write(json.dumps({"success": True}))
+        self.write(
+            json.dumps({"success": True, "message": "Character added successfully!"})
+        )
 
 
 async def main() -> None:
