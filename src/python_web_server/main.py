@@ -1,7 +1,7 @@
 import asyncio
 import json
 
-from tornado.web import Application, RequestHandler
+from tornado.web import Application, RequestHandler, StaticFileHandler
 
 from typing import List, Tuple
 
@@ -55,6 +55,18 @@ class CharacterAdderHandler(RequestHandler):
         )
 
 
+class UploadHandler(RequestHandler):
+    def get(self) -> None:
+        self.render("upload.html")
+
+    def post(self) -> None:
+        files = self.request.files["img_file"]
+        for f in files:
+            with open(f"media/img/{f.filename}", "wb") as img:
+                img.write(f.body)
+        self.write(f"localhost:8888/img/{f.filename}")
+
+
 async def main() -> None:
     handlers: List[Tuple[str, RequestHandler]] = [
         (r"/", MainHandler),
@@ -63,6 +75,8 @@ async def main() -> None:
         (r"/students/([A-Za-z]+)/([0-9]+)", ResourceParamHandler),
         (r"/list", AnotherListHandler),
         (r"/addChar", CharacterAdderHandler),
+        (r"/upload", UploadHandler),
+        (r"/img/(.*)", StaticFileHandler, {"path": "media/img"}),
     ]
     app: Application = Application(handlers, template_path="templates")
     app.listen(8888)
