@@ -1,9 +1,11 @@
 import asyncio
 import json
 
+from argparse import ArgumentParser, Namespace
+
 from tornado.web import Application, RequestHandler, StaticFileHandler
 
-from typing import List, Tuple
+from typing import Tuple
 
 
 class MainHandler(RequestHandler):
@@ -67,7 +69,7 @@ class UploadHandler(RequestHandler):
         self.write(f"localhost:8888/img/{f.filename}")
 
 
-async def main() -> None:
+async def main(port: int) -> None:
     handlers: List[Tuple[str, RequestHandler]] = [
         (r"/", MainHandler),
         (r"/cat", ListHandler),
@@ -79,10 +81,13 @@ async def main() -> None:
         (r"/img/(.*)", StaticFileHandler, {"path": "media/img"}),
     ]
     app: Application = Application(handlers, template_path="templates")
-    app.listen(8888)
+    app.listen(port)
     print("Server listening on port 8888")
     await asyncio.Event().wait()
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    parser: ArgumentParser = ArgumentParser()
+    parser.add_argument("port", help="Select Port")
+    args: Namespace = parser.parse_args()
+    asyncio.run(main(args.port))
